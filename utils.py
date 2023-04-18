@@ -14,7 +14,9 @@ import inspect
 T = TypeVar('T')
 Func_T = TypeVar('Func_T', bound=Callable)
 
+
 class _MissingSentinel:
+    """A sentinel object to represent a missing value."""
 
     __slots__ = ()
 
@@ -32,6 +34,17 @@ MISSING: Any = _MissingSentinel()
 
 
 def find(predicate: Callable[[T], bool], iterable: Iterable[T]) -> Optional[T]:
+    """A helper to return the first element found in the sequence
+    that meets the predicate.
+
+    Parameters
+    ----------
+    predicate : Callable[[T], bool]
+        The predicate to check against.
+    iterable : Iterable[T]
+        The iterable to search through.
+    """
+
     for i in iterable:
         if predicate(i):
             return i
@@ -39,6 +52,40 @@ def find(predicate: Callable[[T], bool], iterable: Iterable[T]) -> Optional[T]:
 
 
 def get(iterable: Iterable[T], conditions: dict[str, Any]) -> Optional[T]:
+    """A helper to return the first element found in the iterable
+
+    Parameters
+    ----------
+    iterable : Iterable[T]
+        The iterable to search through.
+    conditions : dict[str, Any]
+        The conditions to check against.
+
+    Returns
+    -------
+    Optional[T]
+        The first element found in the iterable that meets the conditions.
+
+    To have a nested attribute search (i.e. search by ``x.y``) then
+    pass in ``x.y`` as the conditions' dict key.
+
+
+    Sample
+    ------
+    >>> class A:
+    >>>     def __init__(self, a, b):
+    >>>         self.a = a
+    >>>         self.b = b
+    >>>
+    >>> class B:
+    >>>
+    >>>     def __init__(self, c, d):
+    >>>         self.c = c
+    >>>         self.d = d
+    >>>
+    >>> var = get([A(B(1, 2), 3), A(B(4, 5), 6)], {'a.c': 1, 'b': 3})    # returns A(B(1, 2), 3)
+    >>> var_2 = get([A(B(1, 2), 3), A(B(4, 5), 6)], {'a.c': 4, 'b': 6})  # returns A(B(4, 5), 6)
+    """
 
     for item in iterable:
         flags: list[bool] = []
@@ -62,6 +109,18 @@ async def maybe_coroutine(
     *args,
     **kwargs
 ) -> Coroutine[Any, Any, T]:
+    """A helper to return the result of a function or coroutine.
+
+    Parameters
+    ----------
+    func : Callable[[T], Union[T, Coroutine[Any, Any, T]]]
+        The function or coroutine to run.
+
+    Returns
+    -------
+    Coroutine[Any, Any, T]
+        The result of the function or coroutine.
+    """
 
     if inspect.iscoroutinefunction(func):
         return await func(*args, **kwargs)
@@ -70,6 +129,7 @@ async def maybe_coroutine(
 
 
 class Content:
+    """This class represents the content of a documentation."""
 
     __slots__ = (
         '__description',
@@ -98,6 +158,7 @@ class Content:
 
 
 class Docs:
+    """This class represents the documentation of functions."""
 
     __slots__ = (
         '__data'
@@ -121,6 +182,18 @@ class Docs:
 
 
     def register_doc(self, extra: Optional[Any] = None) -> Func_T:
+        """A decorator to register the documentation of a function.
+
+        Parameters
+        ----------
+        extra : Optional[Any], optional
+            extra information to register, by default None
+
+        Returns
+        -------
+        Func_T
+            The decorated function.
+        """
 
         def decorator(func: Func_T):
             self.__data[func.__qualname__] = Content(
