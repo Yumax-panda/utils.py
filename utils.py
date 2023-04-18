@@ -182,7 +182,7 @@ class Docs:
 
 
     def register_doc(self, extra: Optional[Any] = None) -> Func_T:
-        """A decorator to register the documentation of a function.
+        '''A decorator to register the documentation of a function.
 
         Parameters
         ----------
@@ -193,7 +193,17 @@ class Docs:
         -------
         Func_T
             The decorated function.
-        """
+
+        Sample
+        >>> docs = Docs()
+        >>>
+        >>> @docs.register_doc()
+        >>> def func():
+        >>>     """This is a function."""
+        >>>     pass
+        >>>
+        >>> print(docs) # {'func': {'description': 'This is a function.', 'extra': None}}
+        '''
 
         def decorator(func: Func_T):
             self.__data[func.__qualname__] = Content(
