@@ -249,6 +249,7 @@ class ErrorHandler:
             The arguments passed to the function.
         kwargs : Any
         """
+        raise error
         
 
 
