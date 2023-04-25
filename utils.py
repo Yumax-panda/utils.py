@@ -197,6 +197,7 @@ class Docs:
             The decorated function.
 
         Sample
+        ------
         >>> docs = Docs()
         >>>
         >>> @docs.register_doc()
@@ -224,6 +225,7 @@ class ErrorHandler:
     """This class represents the error handler
 
     Sample
+    ------
     >>> class MyErrorHandler(ErrorHandler):
     >>>
     >>>     def on_error(self, error: Exception, func: Callable, *args, **kwargs) -> None:
