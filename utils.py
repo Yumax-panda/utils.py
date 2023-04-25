@@ -108,7 +108,7 @@ def get(iterable: Iterable[T], conditions: dict[str, Any]) -> Optional[T]:
 
 
 async def maybe_coroutine(
-    func: Callable[[T], Union[T, Coroutine[Any, Any, T]]],
+    func: MaybeCoroutineFunc,
     *args,
     **kwargs
 ) -> Coroutine[Any, Any, T]:
