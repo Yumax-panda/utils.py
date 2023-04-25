@@ -2,6 +2,7 @@ from typing import (
     Any,
     Union,
     TypeVar,
+    NoReturn,
     Optional,
     Callable,
     Iterable,
@@ -236,7 +237,7 @@ class ErrorHandler:
     >>>    ...
     """
 
-    def on_error(error: Exception, func: Callable, *args, **kwargs) -> None:
+    def on_error(error: Exception, func: Callable, *args, **kwargs) -> NoReturn:
         """This function is called when an error is raised.
 
         Parameters
@@ -250,7 +251,6 @@ class ErrorHandler:
         kwargs : Any
         """
         raise error
-        
 
 
     @classmethod
