@@ -13,6 +13,8 @@ import inspect
 
 T = TypeVar('T')
 Func_T = TypeVar('Func_T', bound=Callable)
+CoroutineFunc = Callable[..., Coroutine[Any, Any, T]]
+MaybeCoroutineFunc = Callable[[T], Union[T, Coroutine[Any, Any, T]]]
 
 
 class _MissingSentinel:
@@ -212,6 +214,67 @@ class Docs:
             )
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs)
+
+            return wrapper
+
+        return decorator
+
+
+class ErrorHandler:
+    """This class represents the error handler
+
+    Sample
+    >>> class MyErrorHandler(ErrorHandler):
+    >>>
+    >>>     def on_error(self, error: Exception, func: Callable, *args, **kwargs) -> None:
+    >>>         '''your code here'''
+    >>>
+    >>> @MyErrorHandler.error_handling(ignore_exception=False)
+    >>> def test(a, b, c):
+    >>>    ...
+    """
+
+    def on_error(error: Exception, func: Callable, *args, **kwargs) -> None:
+        """This function is called when an error is raised.
+
+        Parameters
+        ----------
+        error : Exception
+            The error that was raised.
+        func : Callable
+            The function that was called.
+        args : Any
+            The arguments passed to the function.
+        kwargs : Any
+        """
+        pass
+
+
+    @classmethod
+    def error_handling(cls, ignore_exception: bool = False) -> Func_T:
+        """A decorator to handle errors.
+
+        Parameters
+        ----------
+        ignore_exception : bool, optional
+            Whether or not to ignore exceptions, by default False
+
+        Returns
+        -------
+        Func_T
+            The decorated function.
+        """
+
+        def decorator(func: Func_T):
+
+            def wrapper(*args, **kwargs):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if ignore_exception:
+                        return
+                    else:
+                        cls.on_error(e, func, *args, **kwargs)
 
             return wrapper
 
